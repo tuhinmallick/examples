@@ -62,11 +62,9 @@ class AsyncCallbackHandler(AsyncIteratorCallbackHandler):
     
     async def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         if self.final_answer:
-            self.content = ""
             self.final_answer = False
             self.done.set()
-        else:
-            self.content = ""
+        self.content = ""
 
 async def run_call(query: str, stream_it: AsyncCallbackHandler):
     # assign callback handler
