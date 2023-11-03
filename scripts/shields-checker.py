@@ -59,40 +59,28 @@ def run(update, path, shield_error):
     for path in paths:
         with open(path, "r") as f:
             content = f.read()
-        # try to find shields
-        colab_url = colab_link.search(content)
-        if colab_url:
+        if colab_url := colab_link.search(content):
             # if link exists, check it and update if incorrect
             colab_url = colab_url.group(0)
             if update:
                 info = link_update(colab_url, path, "colab")
                 if info["updated"]:
                     logging.info(f"Updated: {path}")
-                else:
-                    pass
             else:
                 valid = link_valid(colab_url, path, "colab")
-                if valid:
-                    pass
-                else:
+                if not valid:
                     logging.warning(f"Failed: {path}")
         else:
             handle_no_shield(path, "colab", shield_error)
-        # now check nbviewer link
-        nbviewer_url = nbviewer_link.search(content)
-        if nbviewer_url:
+        if nbviewer_url := nbviewer_link.search(content):
             nbviewer_url = nbviewer_url.group(0)
             if update:
                 info = link_update(nbviewer_url, path, "nbviewer")
                 if info["updated"]:
                     logging.info(f"Updated: {path}")
-                else:
-                    pass
             else:
                 valid = link_valid(nbviewer_url, path, "nbviewer")
-                if valid:
-                    pass
-                else:
+                if not valid:
                     logging.warning(f"Failed: {path}")
         else:
             handle_no_shield(path, "nbviewer", shield_error)

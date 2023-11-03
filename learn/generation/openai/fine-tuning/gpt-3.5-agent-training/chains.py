@@ -26,16 +26,13 @@ class VectorDBChain:
         res = openai.Embedding.create(
             input=texts, engine="text-embedding-ada-002"
         )
-        embeds = [x["embedding"] for x in res["data"]]
-        return embeds
+        return [x["embedding"] for x in res["data"]]
     
     def query(self, text: str) -> list[str]:
         # create query vector
         xq = self._embed([text])[0]
         res = self.index.query(xq, top_k=3, include_metadata=True)
-        # get documents
-        documents = [x.metadata["text"] for x in res.matches]
-        return documents
+        return [x.metadata["text"] for x in res.matches]
 
     def build_index(self, documents: list[str], batch_size: int = 100):
         for i in tqdm(range(0, len(documents), batch_size)):
